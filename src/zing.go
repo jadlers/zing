@@ -3,9 +3,14 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
+
+	"github.com/joho/godotenv"
 )
+
+var clientAccessToken string
 
 const baseURL = "https://api.genius.com/"
 
@@ -17,7 +22,16 @@ func urlSafeString(s string) string {
 
 func searchRequestURL(query string) string {
 	search := "search?q=" + urlSafeString(query)
-	return baseURL + search
+	accessToken := "&access_token=" + clientAccessToken
+	return baseURL + search + accessToken
+}
+
+func loadEnvironmentVariables() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	clientAccessToken = os.Getenv("CLIENT_ACCESS_TOKEN")
 }
 
 func main() {
