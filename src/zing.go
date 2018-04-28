@@ -59,5 +59,12 @@ func main() {
 
 	requestURL := searchRequestURL(searchString)
 	res := makeRequest(requestURL).Response
-	fmt.Println(res)
+
+	if len(res.Hits) > 0 {
+		for i, hit := range res.Hits {
+			fmt.Printf("%2d. %s\n", i+1, hit.Result.FullTitle)
+		}
+	} else {
+		fmt.Println("No results :(")
+	}
 }
