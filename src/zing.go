@@ -2,8 +2,10 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"strings"
 
@@ -18,6 +20,21 @@ func urlSafeString(s string) string {
 	spacesRemoved := strings.Replace(s, " ", "%20", -1)
 	trimmed := strings.Trim(spacesRemoved, "\n")
 	return trimmed
+}
+
+func makeRequest(url string) SearchResponse {
+	res, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	var body SearchResponse
+	if json.NewDecoder(res.Body).Decode(&body); err != nil {
+		log.Fatal("Couldn't convert response to struct")
+	}
+
+	return body
 }
 
 func searchRequestURL(query string) string {
@@ -40,5 +57,7 @@ func main() {
 	reader := bufio.NewReader(os.Stdin)
 	searchString, _ := reader.ReadString('\n')
 
-	fmt.Println(searchRequestURL(searchString))
+	requestURL := searchRequestURL(searchString)
+	res := makeRequest(requestURL).Response
+	fmt.Println(res)
 }
