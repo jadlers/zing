@@ -1,4 +1,4 @@
-package main
+package genius
 
 // SearchResponse is the response from a search request to the genius API
 type SearchResponse struct {
