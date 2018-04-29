@@ -40,8 +40,9 @@ func extractLinks(res SearchResponse) string {
 	songInfo := makeSongRequest(fstHit.ID)
 	mediaLinks := getMediaLinks(songInfo)
 	links := fmt.Sprintf(`Showing links for: %s
+Lyrics can be found here: %s
 
-%s`, fullTitle, mediaLinks)
+%s`, fullTitle, fstHit.URL, mediaLinks)
 	return links
 }
 
