@@ -13,6 +13,12 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// GetLinksFor searches the genius database for song & artist info for a query.
+// It returns a string including links to more info on the best search result.
+func GetLinksFor(query string) string {
+	return "Searched for: " + query
+}
+
 var clientAccessToken string
 
 const baseURL = "https://api.genius.com/"

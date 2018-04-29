@@ -24,6 +24,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"zzng/genius"
 
 	"github.com/spf13/cobra"
 )
@@ -38,7 +39,9 @@ you just have to know more about that song you've got stuck
 in your head.`,
 
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("Want to search for: %s\n", strings.Join(args, " "))
+		search := strings.Join(args, " ")
+		res := genius.GetLinksFor(search)
+		fmt.Println(res)
 	},
 }
 
