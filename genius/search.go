@@ -37,6 +37,7 @@ func extractLinks(res SearchResponse) string {
 	}
 	fstHit := res.Response.Hits[0].Result
 	fullTitle := fstHit.FullTitle
+	makeSongRequest(fstHit.ID)
 	links := fmt.Sprintf(`Showing links for: %s`, fullTitle)
 	return links
 }
@@ -58,6 +59,24 @@ func makeSearchRequest(search string) SearchResponse {
 	var body SearchResponse
 	if json.NewDecoder(res.Body).Decode(&body); err != nil {
 		log.Fatal("Couldn't convert response to struct")
+	}
+
+	return body
+}
+
+func makeSongRequest(id int) SongResponse {
+	accessToken := "?access_token=" + clientAccessToken
+	url := baseURL + "songs/" + fmt.Sprintf("%d", id) + accessToken
+
+	res, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	var body SongResponse
+	if json.NewDecoder(res.Body).Decode(&body); err != nil {
+		log.Fatalf("Couldn't convert response to struct (%s)", err)
 	}
 
 	return body
