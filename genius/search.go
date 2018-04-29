@@ -37,9 +37,24 @@ func extractLinks(res SearchResponse) string {
 	}
 	fstHit := res.Response.Hits[0].Result
 	fullTitle := fstHit.FullTitle
-	makeSongRequest(fstHit.ID)
-	links := fmt.Sprintf(`Showing links for: %s`, fullTitle)
+	songInfo := makeSongRequest(fstHit.ID)
+	mediaLinks := getMediaLinks(songInfo)
+	links := fmt.Sprintf(`Showing links for: %s
+
+%s`, fullTitle, mediaLinks)
 	return links
+}
+
+func getMediaLinks(song SongResponse) string {
+	var links []string
+
+	for _, media := range song.Response.Song.Media {
+		provider := strings.Title(strings.Replace(media.Provider, "_", " ", -1))
+		link := media.URL
+		links = append(links, fmt.Sprintf("%15s: %s", provider, link))
+	}
+
+	return strings.Join(links, "\n")
 }
 
 func urlSafeString(s string) string {
