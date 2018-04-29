@@ -86,10 +86,10 @@ func main() {
 	searchString := getCliInput()
 
 	requestURL := searchRequestURL(searchString)
-	res := makeRequest(requestURL).Response
+	r := makeRequest(requestURL)
 
-	if len(res.Hits) > 0 {
-		for i, hit := range res.Hits {
+	if len(r.Response.Hits) > 0 {
+		for i, hit := range r.Response.Hits {
 			fmt.Printf("%2d. %s\n", i+1, hit.Result.FullTitle)
 		}
 	} else {
@@ -97,6 +97,10 @@ func main() {
 	}
 
 	// Dvelve deeper on result
-	choice := makeChoice(len(res.Hits))
-	fmt.Printf("You chose: %d\n", choice)
+	choice := makeChoice(len(r.Response.Hits))
+	showInfo(r, choice)
+}
+
+func showInfo(r SearchResponse, choice int) {
+	fmt.Println(r.Response.Hits[choice].Result.URL)
 }
