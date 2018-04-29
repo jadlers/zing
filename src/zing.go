@@ -62,10 +62,14 @@ func getCliInput() string {
 }
 
 func makeChoice(numResults int) int {
-	fmt.Printf("\nChoose a song to get more info: ")
+	fmt.Printf("\nChoose a song to get more info (empty exits): ")
 	var intChoice int
 	for intChoice == 0 {
 		choice := getCliInput()
+		if choice == "" {
+			os.Exit(0)
+		}
+
 		intVer, _ := strconv.ParseInt(choice, 10, 0)
 		intChoice = int(intVer)
 
