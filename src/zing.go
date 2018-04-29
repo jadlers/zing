@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/joho/godotenv"
@@ -18,8 +19,7 @@ const baseURL = "https://api.genius.com/"
 
 func urlSafeString(s string) string {
 	spacesRemoved := strings.Replace(s, " ", "%20", -1)
-	trimmed := strings.Trim(spacesRemoved, "\n")
-	return trimmed
+	return spacesRemoved
 }
 
 func makeRequest(url string) SearchResponse {
@@ -51,11 +51,39 @@ func loadEnvironmentVariables() {
 	clientAccessToken = os.Getenv("CLIENT_ACCESS_TOKEN")
 }
 
+func getCliInput() string {
+	reader := bufio.NewReader(os.Stdin)
+	searchString, err := reader.ReadString('\n')
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return strings.Trim(searchString, "\n")
+}
+
+func makeChoice(numResults int) int {
+	fmt.Printf("\nChoose a song to get more info: ")
+	var intChoice int
+	for intChoice == 0 {
+		choice := getCliInput()
+		intVer, _ := strconv.ParseInt(choice, 10, 0)
+		intChoice = int(intVer)
+
+		if intChoice < 1 || intChoice > numResults {
+			intChoice = 0
+			fmt.Printf("\rNot a valid number, try again: ")
+		}
+	}
+
+	return intChoice - 1
+}
+
 func main() {
 	loadEnvironmentVariables()
+
+	// Make a search
 	fmt.Print("Is is sing along time? I'm exited, search away: ")
-	reader := bufio.NewReader(os.Stdin)
-	searchString, _ := reader.ReadString('\n')
+	searchString := getCliInput()
 
 	requestURL := searchRequestURL(searchString)
 	res := makeRequest(requestURL).Response
@@ -67,4 +95,8 @@ func main() {
 	} else {
 		fmt.Println("No results :(")
 	}
+
+	// Dvelve deeper on result
+	choice := makeChoice(len(res.Hits))
+	fmt.Printf("You chose: %d\n", choice)
 }
