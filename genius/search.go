@@ -1,13 +1,11 @@
 package genius
 
 import (
-	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/joho/godotenv"
@@ -69,61 +67,4 @@ func searchRequestURL(query string) string {
 	search := "search?q=" + urlSafeString(query)
 	accessToken := "&access_token=" + clientAccessToken
 	return baseURL + search + accessToken
-}
-
-func getCliInput() string {
-	reader := bufio.NewReader(os.Stdin)
-	searchString, err := reader.ReadString('\n')
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return strings.Trim(searchString, "\n")
-}
-
-func makeChoice(numResults int) int {
-	fmt.Printf("\nChoose a song to get more info (empty exits): ")
-	var intChoice int
-	for intChoice == 0 {
-		choice := getCliInput()
-		if choice == "" {
-			os.Exit(0)
-		}
-
-		intVer, _ := strconv.ParseInt(choice, 10, 0)
-		intChoice = int(intVer)
-
-		if intChoice < 1 || intChoice > numResults {
-			intChoice = 0
-			fmt.Printf("\rNot a valid number, try again: ")
-		}
-	}
-
-	return intChoice - 1
-}
-
-func main() {
-
-	// Make a search
-	fmt.Print("Is is sing along time? I'm exited, search away: ")
-	searchString := getCliInput()
-
-	requestURL := searchRequestURL(searchString)
-	r := makeRequest(requestURL)
-
-	if len(r.Response.Hits) > 0 {
-		for i, hit := range r.Response.Hits {
-			fmt.Printf("%2d. %s\n", i+1, hit.Result.FullTitle)
-		}
-	} else {
-		fmt.Println("No results :(")
-	}
-
-	// Dvelve deeper on result
-	choice := makeChoice(len(r.Response.Hits))
-	showInfo(r, choice)
-}
-
-func showInfo(r SearchResponse, choice int) {
-	fmt.Println(r.Response.Hits[choice].Result.URL)
 }
