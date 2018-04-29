@@ -13,13 +13,21 @@ import (
 	"github.com/joho/godotenv"
 )
 
+var clientAccessToken string
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file. Needed for API calls to genius.")
+	}
+	clientAccessToken = os.Getenv("CLIENT_ACCESS_TOKEN")
+}
+
 // GetLinksFor searches the genius database for song & artist info for a query.
 // It returns a string including links to more info on the best search result.
 func GetLinksFor(query string) string {
-	return "Searched for: " + query
+	return "Will search for: " + query
 }
-
-var clientAccessToken string
 
 const baseURL = "https://api.genius.com/"
 
@@ -47,14 +55,6 @@ func searchRequestURL(query string) string {
 	search := "search?q=" + urlSafeString(query)
 	accessToken := "&access_token=" + clientAccessToken
 	return baseURL + search + accessToken
-}
-
-func loadEnvironmentVariables() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	clientAccessToken = os.Getenv("CLIENT_ACCESS_TOKEN")
 }
 
 func getCliInput() string {
@@ -89,7 +89,6 @@ func makeChoice(numResults int) int {
 }
 
 func main() {
-	loadEnvironmentVariables()
 
 	// Make a search
 	fmt.Print("Is is sing along time? I'm exited, search away: ")
