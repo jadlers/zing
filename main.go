@@ -20,7 +20,7 @@
 
 package main
 
-import "zzng/cmd"
+import "github.com/jadlers/zzng/cmd"
 
 func main() {
 	cmd.Execute()

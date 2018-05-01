@@ -1,7 +1,7 @@
 # Created by https://www.gitignore.io/api/go,visualstudiocode,vim,macos
 
 ### Zing ###
-.env
+Makefile
 
 ### Go ###
 # Binaries for programs and plugins

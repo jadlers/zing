@@ -24,8 +24,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"zzng/genius"
 
+	"github.com/jadlers/zzng/genius"
 	"github.com/spf13/cobra"
 )
 
