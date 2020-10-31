@@ -25,6 +25,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/jadlers/zzng/apiseeds"
 	"github.com/jadlers/zzng/genius"
 	"github.com/spf13/cobra"
 )
@@ -32,12 +33,22 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
 	Use:   "zzng",
-	Short: "Get information about songs & artists",
-	Long: `CLI to get information on those songs and artists that
-might be playing around you at this exact moment. Or maybe
-you just have to know more about that song you've got stuck
-in your head.`,
+	Short: "Get lyrics for songs.",
+	Long: `CLI to get information on those songs and artists that might be playing
+	around you at this exact moment. Or maybe you just have to know more about
+	that song you've got stuck in your head.
 
+Use genius to get links to listen on YouTube or Spotify and links to lyrics on
+their website.
+
+Use apiseeds to get lyrics directly back as text, not nearly as many songs are supported.`,
+}
+
+var cmdGenius = &cobra.Command{
+	Use:   "genius [search]",
+	Short: "Get links for lyrics, Spotify, and Spotify from Genius.",
+
+	Args: cobra.MinimumNArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
 		search := strings.Join(args, " ")
 		res := genius.GetLinksFor(search)
@@ -45,9 +56,28 @@ in your head.`,
 	},
 }
 
+var cmdApiseeds = &cobra.Command{
+	Use:   "apiseeds [artist] [song]",
+	Short: "Use Apiseeds to get lyrics.",
+
+	Args: cobra.MinimumNArgs(2),
+	Run: func(cmd *cobra.Command, args []string) {
+		lyrics, err := apiseeds.GetLyrics(args[0], args[1])
+		if err != nil {
+			fmt.Println("Error:", err)
+			os.Exit(1)
+		}
+
+		fmt.Println(lyrics)
+	},
+}
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {
+	rootCmd.AddCommand(cmdGenius)
+	rootCmd.AddCommand(cmdApiseeds)
+
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
