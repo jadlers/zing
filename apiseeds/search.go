@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-var clientApiKey string = "QDR3B5i0Ae5p9x6QFmOvslObrUCV5FE5PxXCr0l78hcLS73Bf78ivOfCpL2FVpzw"
+var clientApiKey string
 
 const baseURL = "https://orion.apiseeds.com/api/music/lyric/"
 
@@ -20,7 +20,7 @@ func GetLyrics(artist, title string) (string, error) {
 
 	switch statusCode {
 	case 200:
-		fmt.Printf("Showing lyrics for %s - %s\n\n", song.Result.Artist.Name, song.Result.Track.Name)
+		fmt.Printf("Lyrics for %s - %s:\n\n", song.Result.Artist.Name, song.Result.Track.Name)
 		return song.Result.Track.Text, nil
 	case 404:
 		return "", fmt.Errorf("No lyrics found for \"%s\" - \"%s\"", artist, title)
